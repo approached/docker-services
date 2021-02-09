@@ -1,0 +1,30 @@
+# https://hub.docker.com/_/mariadb
+
+version: '3.1'
+
+services:
+
+  mariadb:
+    image: mariadb:10.3
+    restart: unless-stopped
+    container_name: mariadb
+    hostname: mariadb
+    volumes:
+      - $PWD/my_custom.cnf:/etc/mysql/conf.d/my_custom.cnf
+      - mariadb:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=
+      - MYSQL_ALLOW_EMPTY_PASSWORD=yes
+    ports:
+      - 3306:3306
+    networks:
+      - backend
+
+
+networks:
+  backend:
+    external: true
+
+
+volumes:
+  mariadb:

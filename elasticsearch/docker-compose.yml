@@ -1,0 +1,35 @@
+# https://hub.docker.com/_/elasticsearch
+
+version: "3.8"
+
+services:
+  elasticsearch:
+    image: elasticsearch:7.9.2
+    restart: unless-stopped
+    container_name: elasticsearch
+    hostname: elasticsearch
+    environment:
+      - node.name=es01
+      - discovery.type=single-node
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    volumes:
+      - elasticsearch:/usr/share/elasticsearch/data
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    networks:
+      - backend
+    ports:
+      - 9200:9200
+
+      
+networks:
+  backend:
+    external: true
+    
+    
+volumes:
+  elasticsearch:
+

@@ -1,0 +1,26 @@
+# https://hub.docker.com/_/redis
+
+version: "3.8"
+
+services:
+  redis:
+    image: redis:alpine
+    restart: unless-stopped
+    container_name: redis
+    hostname: redis
+    command: redis-server /usr/local/etc/redis/redis.conf
+    volumes:
+      - redis:/data
+      - $PWD/redis.conf:/usr/local/etc/redis/redis.conf
+    networks:
+      - backend
+      
+
+networks:
+  backend:
+    external: true
+
+    
+volumes:
+  redis:
+    driver: local
