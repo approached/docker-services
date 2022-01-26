@@ -3,28 +3,23 @@
 version: '3.1'
 
 services:
-
   mariadb:
     image: mariadb:10.3
     restart: unless-stopped
     container_name: mariadb
     hostname: mariadb
     volumes:
+      - ./data:/var/lib/mysql
       - $PWD/my_custom.cnf:/etc/mysql/conf.d/my_custom.cnf
-      - mariadb:/var/lib/mysql
     environment:
-      - MYSQL_ROOT_PASSWORD=
+      - MYSQL_ROOT_PASSWORD=SUPERSECRET
       - MYSQL_ALLOW_EMPTY_PASSWORD=yes
     ports:
       - 3306:3306
     networks:
-      - backend
+      - mariadb_network
 
 
 networks:
-  backend:
-    external: true
-
-
-volumes:
-  mariadb:
+  mariadb_network:
+    name: mariadb_network
