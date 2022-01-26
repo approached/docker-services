@@ -4,18 +4,18 @@ version: "3.1"
 
 services:
   mariadb:
-    image: postgres:13-alpine
-    restart: unless-stopped
+    image: postgres:14-alpine
     container_name: postgres
-    hostname: postgres
+    restart: unless-stopped
+    volumes:
+      - ./data:/var/lib/postgresql/data
     environment:
       POSTGRES_PASSWORD: postgres
     ports:
       - 5432:5432
     networks:
-      - backend
-  
+      - postgres_network
+
 networks:
-  backend:
-    external: true
-            
+  postgres_network:
+    name: postgres_network

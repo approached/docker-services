@@ -5,22 +5,15 @@ version: "3.8"
 services:
   redis:
     image: redis:alpine
-    restart: unless-stopped
     container_name: redis
-    hostname: redis
+    restart: unless-stopped
     command: redis-server /usr/local/etc/redis/redis.conf
     volumes:
-      - redis:/data
-      - $PWD/redis.conf:/usr/local/etc/redis/redis.conf
+      - ./data:/data
+      - ./redis.conf:/usr/local/etc/redis/redis.conf
     networks:
-      - backend
-      
+      - redis_network
 
 networks:
-  backend:
-    external: true
-
-    
-volumes:
-  redis:
-    driver: local
+  redis_network:
+    name: redis_network
