@@ -1,0 +1,21 @@
+---
+version: "3.8"
+
+services:
+  dejavu:
+    image: appbaseio/dejavu:3.4.7
+    container_name: dejavu
+    ports:
+      - 1358:1358
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.dejavu.entrypoints=https"
+      - "traefik.http.routers.dejavu.rule=Host(`dejavu.test`)"
+      - "traefik.http.routers.dejavu.tls=true"
+    networks:
+      - traefik_proxy
+
+
+networks:
+  traefik_proxy:
+    name: traefik_proxy
