@@ -1,0 +1,25 @@
+---
+version: '3'
+
+services:
+  heimdall:
+    image: lscr.io/linuxserver/heimdall
+    container_name: heimdall
+    restart: always
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Berlin
+    volumes:
+      - $PWD/config:/config
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.heimdall.entrypoints=https"
+      - "traefik.http.routers.heimdall.rule=Host(`heimdall.test`)"
+      - "traefik.http.routers.heimdall.tls=true"
+    networks:
+      - traefik_proxy
+
+networks:
+  traefik_proxy:
+      name: traefik_proxy
