@@ -1,0 +1,27 @@
+# https://www.metabase.com/docs/latest/operations-guide/running-metabase-on-docker.html
+---
+version: '3'
+
+services:
+  metabase:
+    image: metabase/metabase:latest
+    container_name: metabase
+    restart: always
+    environment:
+      - MB_DB_FILE=/metabase-data/metabase.db
+      - JAVA_TIMEZONE=Europe/Berlin
+    volumes:
+      - ./data:/metabase-data
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.metabase.entrypoints=https"
+      - "traefik.http.routers.metabase.rule=Host(`metabase.test`)"
+      - "traefik.http.routers.metabase.tls=true"
+    networks:
+      - traefik_proxy
+    ports:
+      - 3000:3000
+
+networks:
+  traefik_proxy:
+      name: traefik_proxy
