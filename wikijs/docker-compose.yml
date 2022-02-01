@@ -1,0 +1,31 @@
+---
+version: '3'
+
+services:
+  wikijs:
+    image: requarks/wiki:2
+    container_name: wikijs
+    restart: always
+    environment:
+      - DB_TYPE=postgres
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_USER=wikijs
+      - DB_PASS=wikijs
+      - DB_NAME=wikijs
+    volumes:
+      - $PWD/config:/config
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.wikijs.entrypoints=https"
+      - "traefik.http.routers.wikijs.rule=Host(`wikijs.test`)"
+      - "traefik.http.routers.wikijs.tls=true"
+    networks:
+      - traefik_proxy
+      - postgres_network
+
+networks:
+  traefik_proxy:
+      name: traefik_proxy
+  postgres_network:
+    name: postgres_network
