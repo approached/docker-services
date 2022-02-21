@@ -1,6 +1,5 @@
-# https://hub.docker.com/_/mariadb
-
-version: '3.1'
+---
+version: "3.8"
 
 services:
   mariadb:
@@ -15,7 +14,7 @@ services:
       - MYSQL_ROOT_PASSWORD=SUPERSECRET
       - MYSQL_ALLOW_EMPTY_PASSWORD=yes
     ports:
-      - 3306:3306
+      - 127.0.0.1:3306:3306
     networks:
       - mariadb_network
 
