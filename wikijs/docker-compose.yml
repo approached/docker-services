@@ -16,10 +16,10 @@ services:
     volumes:
       - $PWD/config:/config
     labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.wikijs.entrypoints=https"
-      - "traefik.http.routers.wikijs.rule=Host(`wikijs.test`)"
-      - "traefik.http.routers.wikijs.tls=true"
+      traefik.enable: true
+      traefik.http.routers.wikijs.entrypoints: https
+      traefik.http.routers.wikijs.rule: Host(`wikijs.test`)
+      traefik.http.routers.wikijs.tls: true
     networks:
       - traefik_proxy
       - postgres_network

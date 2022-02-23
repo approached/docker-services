@@ -7,7 +7,7 @@ Create cert (https://github.com/FiloSottile/mkcert):
 brew install mkcert
 brew install nss # only if you use Firefox
 mkcert -install # Setup the local Root CA
-mkcert -cert-file traefik-local/certs/local.crt -key-file traefik-local/certs/local.key "traefik.test" "whoami.test" "heimdall.test" "dejavu.test" "elasticsearch.test" "metabase.test" "wikijs.test"
+mkcert -cert-file traefik-local/certs/local.crt -key-file traefik-local/certs/local.key "traefik.test" "whoami.test" "heimdall.test" "dejavu.test" "elasticsearch.test" "metabase.test" "wikijs.test" "hasura.test"
 ```
 
 Start:
@@ -93,3 +93,17 @@ Stop:
 ```
 docker-compose -f postgres/docker-compose.yml down
 ```
+
+## Hasura
+
+Start:
+```
+docker-compose -f hasura/docker-compose.yml up -d --force-recreate
+```
+
+Stop:
+```
+docker-compose -f hasura/docker-compose.yml down
+```
+
+Go to https://hasura.test/

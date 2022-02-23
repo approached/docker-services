@@ -1,0 +1,29 @@
+---
+version: "3.8"
+
+services:
+  hasura:
+    image: hasura/graphql-engine:latest
+    container_name: hasura
+    restart: always
+    environment:
+      HASURA_GRAPHQL_DATABASE_URL: postgres://hasura:hasura@postgres:5432/hasura
+      HASURA_GRAPHQL_ENABLE_CONSOLE: true
+      HASURA_GRAPHQL_ADMIN_SECRET: SECRET
+      HASURA_GRAPHQL_ENABLE_TELEMETRY: false
+    labels:
+      traefik.enable: true
+      traefik.http.routers.hasura.entrypoints: https
+      traefik.http.routers.hasura.rule: Host(`hasura.test`)
+      traefik.http.routers.hasura.tls: true
+      traefik.http.routers.hasura.service: hasura-service
+      traefik.http.services.hasura-service.loadbalancer.server.port: 8080
+    networks:
+      - traefik_proxy
+      - postgres_network
+
+networks:
+  traefik_proxy:
+      name: traefik_proxy
+  postgres_network:
+    name: postgres_network

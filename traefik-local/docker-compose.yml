@@ -1,5 +1,5 @@
 ---
-version: "3.7"
+version: "3.8"
 
 services:
   traefik:
@@ -10,11 +10,11 @@ services:
       - ./certs:/certs:ro
       - /var/run/docker.sock:/var/run/docker.sock:ro
     labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.api.entryPoints=https"
-      - "traefik.http.routers.api.rule=Host(`traefik.test`)"
-      - "traefik.http.routers.api.service=api@internal"
-      - "traefik.http.routers.api.tls=true"
+      traefik.enable: true
+      traefik.http.routers.api.entrypoints: https
+      traefik.http.routers.api.rule: Host(`traefik.test`)
+      traefik.http.routers.api.service: api@internal
+      traefik.http.routers.api.tls: true
     command:
       - '--api'
       - '--providers.docker=true'
@@ -32,14 +32,22 @@ services:
       - '--providers.file.filename=/certs/dynamic.yml'
       - '--providers.file.watch=true'
 
-      - '--log=true'
+      - '--log.filePath=/dev/stdout'
       - '--log.level=DEBUG'
-      - '--log.filepath=/var/log/traefik.log'
     ports:
       - 80:80
       - 443:443
     networks:
       - traefik_proxy
+
+  dnsmasq:
+    image: jpillora/dnsmasq:latest
+    restart: unless-stopped
+    container_name: dnsmasq
+    ports:
+      - 53:53/udp
+    volumes:
+      - ./dnsmasq.conf:/etc/dnsmasq.conf:ro
 
 networks:
   traefik_proxy:
