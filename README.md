@@ -98,6 +98,7 @@ docker-compose -f postgres/docker-compose.yml down
 
 Start:
 ```
+docker-compose -f traefik-local/docker-compose.yml up -d --force-recreate
 docker-compose -f hasura/docker-compose.yml up -d --force-recreate
 ```
 
