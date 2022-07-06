@@ -7,12 +7,9 @@ version: "3.8"
 
 services:
   keycloak:
-    build:
-      context: .
-      args:
-        KC_DB: mysql
+    image: quay.io/keycloak/keycloak:18.0.2
     container_name: keycloak
-    command: start --import-realm
+    command: start --auto-build --import-realm
     volumes:
       - ./import:/opt/keycloak/data/import
       - ./themes:/opt/keycloak/themes
@@ -20,6 +17,7 @@ services:
       KEYCLOAK_ADMIN: admin
       KEYCLOAK_ADMIN_PASSWORD: admin
 
+      KC_DB: mysql
       KC_DB_URL_HOST: keycloak_mysql
       KC_DB_PORT: 3306
       KC_DB_URL_DATABASE: keycloak
