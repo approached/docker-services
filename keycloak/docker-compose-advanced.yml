@@ -1,0 +1,58 @@
+# https://www.keycloak.org/getting-started/getting-started-docker
+# https://hub.docker.com/_/postgres
+# https://www.keycloak.org/server/all-config
+
+---
+version: "3.8"
+
+services:
+  keycloak:
+    build:
+      context: .
+      args:
+        KC_DB: postgres
+    container_name: keycloak
+    volumes:
+      - ./data/themes:/opt/keycloak/themes
+    environment:
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+
+      KC_DB_URL_HOST: keycloak_postgres
+      KC_DB_PORT: 5432
+      KC_DB_SCHEMA: public
+      KC_DB_USERNAME: postgres
+      KC_DB_PASSWORD: postgres
+
+      KC_HOSTNAME: keycloak.test
+      KC_HOSTNAME_STRICT: false
+      KC_PROXY: edge
+    labels:
+      traefik.enable: true
+      traefik.http.routers.keycloak.entrypoints: https
+      traefik.http.routers.keycloak.rule: Host(`keycloak.test`)
+      traefik.http.routers.keycloak.tls: true
+    networks:
+      - traefik_proxy
+      - backend
+
+  postgres:
+    image: postgres:13-alpine
+    container_name: keycloak_postgres
+    restart: unless-stopped
+    volumes:
+      - ./db:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: keycloak
+    ports:
+      - 127.0.0.1:5432:5432
+    networks:
+      - backend
+
+networks:
+  traefik_proxy:
+      name: traefik_proxy
+  backend:
+      name: backend
