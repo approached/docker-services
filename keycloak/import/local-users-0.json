@@ -1,0 +1,23 @@
+{
+  "realm" : "local",
+  "users" : [ {
+    "id" : "b9c12e5a-3c01-405e-841a-a1399d0cc1dc",
+    "createdTimestamp" : 1657115751440,
+    "username" : "john@example.com",
+    "enabled" : true,
+    "totp" : false,
+    "emailVerified" : true,
+    "firstName" : "John",
+    "lastName" : "Doe",
+    "email" : "john@example.com",
+    "attributes" : {
+      "locale" : [ "de" ]
+    },
+    "credentials" : [ ],
+    "disableableCredentialTypes" : [ ],
+    "requiredActions" : [ ],
+    "realmRoles" : [ "default-roles-local" ],
+    "notBefore" : 0,
+    "groups" : [ ]
+  } ]
+}

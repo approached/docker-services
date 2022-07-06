@@ -8,10 +8,9 @@ services:
     image: quay.io/keycloak/keycloak:18.0.2
     restart: unless-stopped
     container_name: keycloak
-    command:
-      - start-dev
+    command: start-dev
     volumes:
-      - ./data/themes:/opt/keycloak/themes
+      - ./themes:/opt/keycloak/themes
     environment:
       KEYCLOAK_ADMIN: admin
       KEYCLOAK_ADMIN_PASSWORD: admin

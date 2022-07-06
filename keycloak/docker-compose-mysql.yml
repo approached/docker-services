@@ -12,8 +12,10 @@ services:
       args:
         KC_DB: mysql
     container_name: keycloak
+    command: start --import-realm
     volumes:
-      - ./data/themes:/opt/keycloak/themes
+      - ./import:/opt/keycloak/data/import
+      - ./themes:/opt/keycloak/themes
     environment:
       KEYCLOAK_ADMIN: admin
       KEYCLOAK_ADMIN_PASSWORD: admin
