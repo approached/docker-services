@@ -1,0 +1,19 @@
+# https://www.keycloak.org/getting-started/getting-started-docker
+
+---
+version: "3.8"
+
+services:
+  keycloak:
+    image: quay.io/keycloak/keycloak:18.0.2
+    restart: unless-stopped
+    container_name: keycloak
+    command:
+      - start-dev
+    volumes:
+      - ./data/themes:/opt/keycloak/themes
+    environment:
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+    ports:
+      - 8080:8080
