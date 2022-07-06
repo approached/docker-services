@@ -1,0 +1,61 @@
+# https://www.keycloak.org/getting-started/getting-started-docker
+# https://hub.docker.com/_/postgres
+# https://www.keycloak.org/server/all-config
+
+---
+version: "3.8"
+
+services:
+  keycloak:
+    build:
+      context: .
+      args:
+        KC_DB: mysql
+    container_name: keycloak
+    volumes:
+      - ./data/themes:/opt/keycloak/themes
+    environment:
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+
+      KC_DB_URL_HOST: keycloak_mysql
+      KC_DB_PORT: 3306
+      KC_DB_URL_DATABASE: keycloak
+      KC_DB_USERNAME: root
+      KC_DB_PASSWORD: secret
+
+      KC_HOSTNAME: keycloak.test
+      KC_HOSTNAME_STRICT: false
+      KC_PROXY: edge
+    labels:
+      traefik.enable: true
+      traefik.http.routers.keycloak.entrypoints: https
+      traefik.http.routers.keycloak.rule: Host(`keycloak.test`)
+      traefik.http.routers.keycloak.tls: true
+    networks:
+      - traefik_proxy
+      - backend
+
+  mysql:
+    image: mysql:8-oracle
+    container_name: keycloak_mysql
+    restart: unless-stopped
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    environment:
+      MYSQL_DATABASE: keycloak
+      MYSQL_ROOT_PASSWORD: secret
+    volumes:
+      - keycloak_mysql:/var/lib/mysql
+    ports:
+      - 127.0.0.1:3306:3306
+    networks:
+      - backend
+
+volumes:
+  keycloak_mysql:
+
+networks:
+  traefik_proxy:
+      name: traefik_proxy
+  backend:
+      name: backend
