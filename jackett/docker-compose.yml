@@ -1,0 +1,31 @@
+# https://github.com/Jackett/Jackett
+# https://hub.docker.com/r/linuxserver/jackett/
+---
+version: '3'
+
+services:
+  jackett:
+    image: lscr.io/linuxserver/jackett:latest
+    container_name: jackett
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Berlin
+      - AUTO_UPDATE=true #optional
+      # - RUN_OPTS=<run options here> #optional
+    volumes:
+      - ./config:/config
+      - ./downloads:/downloads
+    ports:
+      - 9117:9117
+    # labels:
+    #   - "traefik.enable=true"
+    #   - "traefik.http.routers.jackett.entrypoints=https"
+    #   - "traefik.http.routers.jackett.rule=Host(`jackett.test`)"
+    #   - "traefik.http.routers.jackett.tls=true"
+    # networks:
+    #   - traefik_proxy
+
+networks:
+  traefik_proxy:
+      name: traefik_proxy
