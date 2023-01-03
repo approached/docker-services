@@ -1,0 +1,55 @@
+# https://github.com/heyValdemar/zabbix-traefik-letsencrypt-docker-compose/blob/main/zabbix-traefik-letsencrypt-docker-compose.yml
+# https://github.com/zabbix/zabbix-docker
+# https://github.com/zabbix/zabbix-docker/blob/6.2/docker-compose_v3_alpine_pgsql_latest.yaml
+#
+version: "3.8"
+
+services:
+  zabbix-server:
+    image: zabbix/zabbix-server-pgsql:alpine-6.2-latest
+    container_name: zabbix-server
+    restart: unless-stopped
+    ports:
+     - "10051:10051"
+    env_file:
+     - .env_db
+    networks:
+      - backend
+
+  zabbix-agent:
+    image: zabbix/zabbix-agent:alpine-6.2-latest
+    container_name: zabbix-agent
+    restart: unless-stopped
+    ports:
+     - "10050:10050"
+    environment:
+      ZBX_HOSTNAME: monitoring.example.com
+      ZBX_SERVER_HOST: zabbix-server
+    networks:
+      - backend
+
+  zabbix-web:
+    image: zabbix/zabbix-web-nginx-pgsql:alpine-6.2-latest
+    container_name: zabbix-web
+    restart: unless-stopped
+    env_file:
+     - .env_db
+    environment:
+      ZBX_SERVER_HOST: zabbix-server
+    labels:
+      traefik.enable: true
+      traefik.http.routers.zabbix.entrypoints: https
+      traefik.http.routers.zabbix.rule: Host(`monitoring.example.com`)
+      traefik.http.routers.zabbix.tls: true
+      traefik.http.routers.zabbix.tls.certresolver: lets
+    depends_on:
+      - zabbix-server
+    networks:
+      - traefik_proxy
+      - backend
+
+networks:
+  traefik_proxy:
+    external: true
+  backend:
+    external: true
