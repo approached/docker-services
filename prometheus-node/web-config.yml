@@ -1,0 +1,5 @@
+# Prometheus: https://github.com/prometheus/exporter-toolkit/blob/v0.1.0/https/README.md
+# Alert: https://prometheus.io/docs/alerting/latest/https/
+
+basic_auth_users:
+  test: $2y$05$Ai4uv057ScRjYG2oaRqRXub4QypGkgTfBPj9zRScJ8Dt.wrAb2dr2# # test:test

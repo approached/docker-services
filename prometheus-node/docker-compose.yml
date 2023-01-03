@@ -1,0 +1,42 @@
+version: "3.8"
+
+services:
+  node_exporter:
+    image: quay.io/prometheus/node-exporter:latest
+    container_name: node_exporter
+    restart: unless-stopped
+    command:
+      - '--path.rootfs=/host'
+      - '--web.config.file=/web-config.yml'
+    ports:
+      - "29100:9100"
+    volumes:
+      - '/:/host:ro,rslave'
+      - ./web-config.yml:/web-config.yml:ro
+    networks:
+      - prometheus_network
+
+  cadvisor:
+    image: gcr.io/cadvisor/cadvisor:v0.46.0
+    container_name: cadvisor
+    restart: unless-stopped
+    command:
+      - '--http_auth_file=/cadvisor/htpasswd'
+    ports:
+      - "28080:8080"
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:ro
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+      - /dev/disk/:/dev/disk:ro
+      - ./cadvisor/:/cadvisor
+    devices:
+      - /dev/kmsg
+    privileged: true
+    networks:
+      - prometheus_network
+
+networks:
+  prometheus_network:
+    name: prometheus_network
