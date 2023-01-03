@@ -1,0 +1,15 @@
+# Prometheus monitoring
+
+Inspired by: https://github.com/vegasbrianc/prometheus/blob/master/docker-compose.yml
+
+
+## Grafana Dashboard
+* https://grafana.com/grafana/dashboards/1860-node-exporter-full/
+* https://grafana.com/grafana/dashboards/14282-cadvisor-exporter/
+* https://grafana.com/grafana/dashboards/893-main/
+* https://grafana.com/grafana/dashboards/10619-docker-host-container-overview/
+* https://grafana.com/grafana/dashboards/9578-alertmanager/
+
+
+## Alerts settings
+* https://github.com/samber/awesome-prometheus-alerts

@@ -1,0 +1,5 @@
+# https://grafana.com/docs/grafana/latest/setup-grafana/configure-grafana
+
+GF_SECURITY_ADMIN_USER=test
+GF_SECURITY_ADMIN_PASSWORD=test
+GF_SECURITY_ADMIN_EMAIL=grafanaadmin@localhost
