@@ -1,0 +1,18 @@
+---
+version: "3.8"
+
+services:
+  checkmk:
+    image: checkmk/check-mk-raw:2.1.0p18
+    container_name: checkmk
+    restart: unless-stopped
+    volumes:
+      - '/etc/localtime:/etc/localtime:ro'
+      - './odm-sites:/omd/sites'
+    ports:
+      - '35000:5000'
+      - '38000:8000'
+    tmpfs:
+       - /opt/omd/sites/cmk/tmp:uid=1000,gid=1000
+    ulimits:
+      nofile: 1024
