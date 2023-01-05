@@ -6,13 +6,30 @@ services:
     image: checkmk/check-mk-raw:2.1.0p18
     container_name: checkmk
     restart: unless-stopped
+    env_file:
+      - .env
     volumes:
       - '/etc/localtime:/etc/localtime:ro'
       - './odm-sites:/omd/sites'
     ports:
-      - '35000:5000'
-      - '38000:8000'
+      - '6557:6557/tcp'
+      - '8000:8000'
+      # - '5000:5000'
     tmpfs:
        - /opt/omd/sites/cmk/tmp:uid=1000,gid=1000
     ulimits:
       nofile: 1024
+    labels:
+      traefik.enable: true
+      traefik.http.routers.checkmk.entrypoints: https
+      traefik.http.routers.checkmk.rule: Host(`checkmk.test`)
+      traefik.http.routers.checkmk.tls: true
+      traefik.http.routers.checkmk.tls.certresolver: lets
+      traefik.http.routers.checkmk.service: checkmk-service
+      traefik.http.services.checkmk-service.loadbalancer.server.port: 5000
+    networks:
+      - traefik_proxy
+
+networks:
+  traefik_proxy:
+    external: true
