@@ -1,10 +1,21 @@
-# https://github.com/heyValdemar/zabbix-traefik-letsencrypt-docker-compose/blob/main/zabbix-traefik-letsencrypt-docker-compose.yml
-# https://github.com/zabbix/zabbix-docker
 # https://github.com/zabbix/zabbix-docker/blob/6.2/docker-compose_v3_alpine_pgsql_latest.yaml
-#
+
 version: "3.8"
 
 services:
+  zabbix-database:
+    image: timescale/timescaledb:latest-pg14
+    container_name: zabbix-timescaledb
+    restart: unless-stopped
+    env_file:
+     - .env
+    volumes:
+      - timescaledb:/var/lib/postgresql/data
+    ports:
+      - 127.0.0.1:5433:5432
+    networks:
+      - zabbix_net
+
   zabbix-server:
     image: zabbix/zabbix-server-pgsql:alpine-6.2-latest
     container_name: zabbix-server
@@ -12,28 +23,18 @@ services:
     ports:
      - "10051:10051"
     env_file:
-     - .env_db
+     - .env
+    depends_on:
+    - zabbix-timescaledb
     networks:
-      - backend
-
-  zabbix-agent:
-    image: zabbix/zabbix-agent:alpine-6.2-latest
-    container_name: zabbix-agent
-    restart: unless-stopped
-    ports:
-     - "10050:10050"
-    environment:
-      ZBX_HOSTNAME: monitoring.example.com
-      ZBX_SERVER_HOST: zabbix-server
-    networks:
-      - backend
+      - zabbix_net
 
   zabbix-web:
     image: zabbix/zabbix-web-nginx-pgsql:alpine-6.2-latest
     container_name: zabbix-web
     restart: unless-stopped
     env_file:
-     - .env_db
+     - .env
     environment:
       ZBX_SERVER_HOST: zabbix-server
     labels:
@@ -46,10 +47,13 @@ services:
       - zabbix-server
     networks:
       - traefik_proxy
-      - backend
+      - zabbix_net
 
 networks:
   traefik_proxy:
     external: true
-  backend:
-    external: true
+  zabbix_net:
+
+
+volumes:
+  timescaledb:
