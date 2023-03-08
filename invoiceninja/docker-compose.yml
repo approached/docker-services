@@ -1,0 +1,67 @@
+# https://github.com/invoiceninja/invoiceninja/tree/master
+# https://hub.docker.com/r/invoiceninja/invoiceninja/
+# https://github.com/invoiceninja/dockerfiles
+# https://invoiceninja.github.io/docs/self-host-installation/
+
+---
+version: "3.8"
+
+services:
+
+  web:
+    image: nginx:latest
+    container_name: invoiceninja-web
+    restart: unless-stopped
+    labels:
+      traefik.enable: true
+      traefik.http.routers.invoiceninja.entrypoints: https
+      traefik.http.routers.invoiceninja.rule: Host(`invoiceninja.test`)
+      traefik.http.routers.invoiceninja.tls: true
+      traefik.http.routers.invoiceninja.service: invoiceninja-service
+      traefik.http.services.invoiceninja-service.loadbalancer.server.port: 80
+    env_file: .env
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/nginx.conf:ro
+      - ./public:/var/www/app/public:ro
+    depends_on:
+      - php
+    networks:
+      - traefik_proxy
+      - ninja_network
+
+  php:
+    image: invoiceninja/invoiceninja:latest
+    container_name: invoiceninja-php
+    restart: unless-stopped
+    volumes:
+      - ./public:/var/www/app/public:rw,delegated
+      - ./storage:/var/www/app/storage:rw,delegated
+    env_file:
+     - .env
+    networks:
+      - ninja_network
+    depends_on:
+      - database
+
+  database:
+    image: mariadb:10
+    container_name: invoiceninja-database
+    restart: unless-stopped
+    volumes:
+      - ./database-mysql:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: ninja
+      MYSQL_DATABASE: ninja
+      MYSQL_USER: ninja
+      MYSQL_PASSWORD: ninja
+    ports:
+      - 127.0.0.1:3306:3306
+    networks:
+      - ninja_network
+
+
+networks:
+  traefik_proxy:
+    external: true
+  ninja_network:
+    name: ninja_network
