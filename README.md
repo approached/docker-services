@@ -1,5 +1,14 @@
 # Docker Services
 
+## WikiJS
+
+```
+cd wikijs
+docker-compose up
+```
+
+Go to http://127.0.01:.test/
+
 ## Traefik local
 
 Create cert (https://github.com/FiloSottile/mkcert):
