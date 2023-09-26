@@ -8,6 +8,8 @@ services:
     restart: always
     depends_on:
       - wikijs_postgres
+    volumes:
+      - ./data:/data
     environment:
       - DB_TYPE=postgres
       - DB_HOST=wikijs_postgres
