@@ -1,0 +1,49 @@
+services:
+  mariadb:
+    image: ${GLPI_MARIADB_IMAGE_TAG}
+    container_name : glpi-mariadb
+    restart: unless-stopped
+    volumes:
+      - ./database:/var/lib/mysql
+    environment:
+      MARIADB_DATABASE: ${GLPI_DB_NAME}
+      MARIADB_USER: ${GLPI_DB_USER}
+      MARIADB_PASSWORD: ${GLPI_DB_PASSWORD}
+      MARIADB_ROOT_PASSWORD: ${GLPI_DB_ADMIN_PASSWORD}
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 60s
+    networks:
+      - glpi-network
+
+  glpi:
+    image: ${GLPI_IMAGE_TAG}
+    container_name : glpi
+    restart: unless-stopped
+    volumes:
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+      - ./glpi-data:/var/lib/mysql
+    environment:
+      TIMEZONE: ${GLPI_TIMEZONE}
+    healthcheck:
+      test: timeout 10s bash -c ':> /dev/tcp/127.0.0.1/80' || exit 1
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 90s
+    depends_on:
+      mariadb:
+        condition: service_healthy
+    ports:
+      - "8088:80"
+    networks:
+      - glpi-network
+    platform: linux/x86_64
+
+networks:
+  glpi-network:
+    name: glpi-network
