@@ -10,14 +10,14 @@ services:
       MARIADB_USER: ${GLPI_DB_USER}
       MARIADB_PASSWORD: ${GLPI_DB_PASSWORD}
       MARIADB_ROOT_PASSWORD: ${GLPI_DB_ADMIN_PASSWORD}
-    ports:
-      - "3306:3306"
     healthcheck:
       test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
       interval: 10s
       timeout: 5s
       retries: 3
       start_period: 60s
+    networks:
+      - glpi-network
 
   glpi:
     image: ${GLPI_IMAGE_TAG}
@@ -40,4 +40,10 @@ services:
         condition: service_healthy
     ports:
       - "8088:80"
+    networks:
+      - glpi-network
     platform: linux/x86_64
+
+networks:
+  glpi-network:
+    name: glpi-network
