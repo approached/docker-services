@@ -12,7 +12,7 @@ services:
     restart: unless-stopped
 
   odoo:
-    image: odoo:17
+    image: odoo:18
     depends_on:
       - db
     ports:
