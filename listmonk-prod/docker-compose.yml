@@ -20,6 +20,10 @@ services:
     image: listmonk/listmonk:latest
     container_name: listmonk-app
     restart: unless-stopped
+    command: [sh, -c, "./listmonk --install --idempotent --yes --config 'config.toml' && ./listmonk --upgrade --yes --config 'config.toml' && ./listmonk --config 'config.toml'"]
+    # --config (file) param is set to empty so that listmonk only uses the env vars (below) for config.
+    # --install --idempotent ensures that DB installation happens only once on an empty DB, on the first ever start.
+    # --upgrade automatically runs any DB migrations when a new image is pulled.
     # ports:
     #   - "127.0.0.1:9000:9000"
     volumes:
