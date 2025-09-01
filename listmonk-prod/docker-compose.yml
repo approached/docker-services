@@ -1,0 +1,42 @@
+services:
+  db:
+    image: postgres:17-alpine
+    container_name: listmonk-db
+    restart: unless-stopped
+    env_file: .env
+    volumes:
+      - postgres:/var/lib/postgresql/data
+    # ports:
+    #   - "127.0.0.1:5432:5432"
+    networks:
+      - listmonk
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U listmonk"]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+
+  app:
+    image: listmonk/listmonk:latest
+    container_name: listmonk-app
+    restart: unless-stopped
+    # ports:
+    #   - "127.0.0.1:9000:9000"
+    volumes:
+      - ./config.toml:/listmonk/config.toml
+      - ./uploads:/uploads
+    labels:
+      traefik.enable: true
+      traefik.http.routers.listmonk.entrypoints: https
+      traefik.http.routers.listmonk.rule: Host(`newsletter.example.com`)
+      traefik.http.routers.listmonk.tls: true
+      traefik.http.routers.listmonk.tls.certresolver: lets
+    networks:
+      - listmonk
+      - traefik-net
+
+networks:
+  traefik-net:
+    external: true
+  listmonk:
+    attachable: true
