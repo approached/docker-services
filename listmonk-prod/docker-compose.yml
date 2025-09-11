@@ -10,11 +10,6 @@ services:
     #   - "127.0.0.1:5432:5432"
     networks:
       - listmonk
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U listmonk"]
-      interval: 10s
-      timeout: 5s
-      retries: 6
 
   app:
     image: listmonk/listmonk:latest
